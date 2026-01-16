@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8">
+    <title>Editar Tarefa</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            padding-top: 50px;
+            margin: 0;
+        }
+        .container {
+            width: 90%;
+            max-width: 500px;
+            background-color: white;
+            padding: 20px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+        }
+        h1 {
+            text-align: center;
+            color: #333;
+            margin-bottom: 20px;
+            font-size: 1.4em;
+        }
+        form {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+        label {
+            font-size: 0.9em;
+            color: #555;
+            margin-bottom: 2px;
+        }
+        input[type="text"], input[type="date"], select, textarea {
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            width: 100%;
+            box-sizing: border-box;
+            font-family: inherit;
+        }
+        textarea {
+            resize: vertical;
+            min-height: 80px;
+        }
+        .buttons {
+            display: flex;
+            gap: 10px;
+            margin-top: 10px;
+        }
+        button {
+            flex: 1;
+            padding: 12px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+        .save {
+            background-color: #5cb85c;
+            color: white;
+        }
+        .cancel {
+            background-color: #6c757d;
+            color: white;
+        }
+        button:hover {
+            opacity: 0.9;
+        }
+        a {
+            text-decoration: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Editar Tarefa</h1>
+        <form method="POST">
+            {% csrf_token %}
+
+            <div>
+                <label for="titulo">Título:</label>
+                <input type="text" name="titulo" id="titulo" value="{{ tarefa.titulo }}" required>
+            </div>
+
+            <div>
+                <label for="descricao">Descrição:</label>
+                <textarea name="descricao" id="descricao">{{ tarefa.descricao|default:"" }}</textarea>
+            </div>
+
+            <div>
+                <label for="data_limite">Data Limite:</label>
+                <input type="date" name="data_limite" id="data_limite" value="{{ tarefa.data_limite|date:'Y-m-d' }}">
+            </div>
+
+            <div>
+                <label for="prioridade">Prioridade:</label>
+                <select name="prioridade" id="prioridade">
+                    <option value="Alta" {% if tarefa.prioridade == 'Alta' %}selected{% endif %}>Alta</option>
+                    <option value="Media" {% if tarefa.prioridade == 'Media' %}selected{% endif %}>Média</option>
+                    <option value="Baixa" {% if tarefa.prioridade == 'Baixa' %}selected{% endif %}>Baixa</option>
+                </select>
+            </div>
+
+            <div>
+                <label for="categoria">Categoria:</label>
+                <select name="categoria" id="categoria">
+                    <option value="">Sem categoria</option>
+                    {% for cat in categorias %}
+                        <option value="{{ cat.id }}" {% if tarefa.categoria_id == cat.id %}selected{% endif %}>{{ cat.nome }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <div class="buttons">
+                <button type="submit" class="save">Guardar</button>
+                <a href="{% url 'lista_tarefas' %}"><button type="button" class="cancel">Cancelar</button></a>
+            </div>
+        </form>
+    </div>
+</body>
+</html>
