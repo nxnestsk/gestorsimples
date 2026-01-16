@@ -5,9 +5,14 @@ Um gestor de tarefas minimalista construído com Django.
 ## Funcionalidades
 
 - Criar tarefas com título, descrição e data limite
+- Editar tarefas existentes
 - Marcar tarefas como concluídas
 - Remover tarefas
-- Ordenação automática por status e prazo
+- Definir prioridades (Alta, Média, Baixa)
+- Criar categorias com cores personalizadas
+- Pesquisar tarefas por texto
+- Filtrar por status, prioridade e categoria
+- Ordenação automática por status, prioridade e prazo
 
 ## Requisitos
 
