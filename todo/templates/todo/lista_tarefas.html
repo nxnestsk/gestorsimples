@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8">
+    <title>Gestor de Tarefas Minimalista</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            padding-top: 50px;
+            margin: 0;
+        }
+        .container {
+            width: 90%;
+            max-width: 600px;
+            background-color: white;
+            padding: 20px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+        }
+        h1 {
+            text-align: center;
+            color: #333;
+            margin-bottom: 20px;
+        }
+        form {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+        input[type="text"], input[type="date"] {
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            width: 100%;
+            box-sizing: border-box;
+        }
+        button {
+            padding: 10px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            background-color: #5cb85c;
+            color: white;
+            font-weight: bold;
+        }
+        ul {
+            list-style: none;
+            padding: 0;
+        }
+        li {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 0;
+            border-bottom: 1px solid #eee;
+        }
+        li:last-child {
+            border-bottom: none;
+        }
+        .actions a {
+            text-decoration: none;
+            margin-left: 5px;
+            padding: 5px 10px;
+            border-radius: 4px;
+            font-size: 0.8em;
+        }
+        .actions .concluir {
+            background-color: #5cb85c;
+            color: white;
+        }
+        .actions .remover {
+            background-color: #d9534f;
+            color: white;
+        }
+        .completed {
+            color: #aaa;
+            text-decoration: line-through;
+        }
+        .due-date {
+            font-size: 0.8em;
+            color: #d9534f;
+            font-weight: bold;
+            margin-right: 15px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Gestor de Tarefas</h1>
+        <form method="POST" action="{% url 'adicionar_tarefa' %}">
+            {% csrf_token %}
+
+            <input type="text" name="titulo" placeholder="Título da Tarefa (Obrigatório)" required>
+            <input type="text" name="descricao" placeholder="Descrição (Opcional)">
+            
+            <label for="data_limite" style="font-size: 0.9em;">Data Limite (Opcional):</label>
+            <input type="date" name="data_limite" title="Data Limite">
+
+            <button type="submit">Adicionar Tarefa</button>
+        </form>
+
+        <hr>
+
+        <h2>Lista de Tarefas</h2>
+        <ul>
+            {% for tarefa in tarefas %}
+                <li class="{% if tarefa.status == 'Concluida' %}completed{% endif %}">
+                    <div>
+                        <span style="font-weight: bold;">{{ tarefa.titulo }}</span>
+                        {% if tarefa.descricao %}<p style="font-size: 0.8em; color: #777; margin: 2px 0;">{{ tarefa.descricao }}</p>{% endif %}
+                    </div>
+                    
+                    <div style="display: flex; align-items: center;">
+                        {% if tarefa.data_limite %}<span class="due-date">Prazo: {{ tarefa.data_limite }}</span>{% endif %}
+                        
+                        <div class="actions">
+                            {% if tarefa.status != 'Concluida' %}
+                                <a href="{% url 'marcar_concluida' tarefa.id %}" class="concluir">✓</a>
+                            {% endif %}
+                            <a href="{% url 'remover_tarefa' tarefa.id %}" class="remover">X</a>
+                        </div>
+                    </div>
+                </li>
+            {% empty %}
+                <li>Nenhuma tarefa adicionada ainda.</li>
+            {% endfor %}
+        </ul>
+    </div>
+</body>
+</html>
